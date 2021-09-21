@@ -43,13 +43,13 @@ init =
 ---- UPDATE ----
 
 
-addRecord : Model -> Record -> Model
-addRecord model record =
-    { model | recordList = model.recordList ++ [ record ] }
+--addRecord :  -> Record -> Model
+addRecord records record =
+     List.append records [record ]
 
 
 type Msg
-    = Add Model
+    = Add 
     | InputText String
 
 
@@ -60,14 +60,13 @@ type Msg
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        Add state ->
-            ( addRecord state { id = model.id, task = model.inputText, order = model.id, status = Active }
+        Add ->
+            ({ model | recordList = addRecord model.recordList { id = model.id, task = model.inputText, order = model.id, status = Active }}
             , Cmd.none
             )
 
         InputText text ->
             ( { model | inputText = text }, Cmd.none )
-
 
 
 ---- VIEW ----
@@ -81,10 +80,9 @@ generateHeader =
         , div [ class "header-input" ]
             [ input [ type_ "text", placeholder "Add a task", name "add-to-do", class "header-add-item-input", onInput InputText ] []
             , button [ class "add-item-btn" ]
-                [ img [ class "header-add-item", src "./icons/plus-black-symbol.svg", onClick (Add stateModel) ] [] ]
+                [ img [ class "header-add-item", src "./icons/plus-black-symbol.svg", onClick Add  ] [] ]
             ]
         ]
-
 
 view : Model -> Html Msg
 view model =
