@@ -1,7 +1,7 @@
 module Main exposing (..)
 
 import Browser
-import Html exposing (Html, button, div, img, input, text)
+import Html exposing (Html, button, div, h1, img, input, text)
 import Html.Attributes exposing (class, name, placeholder, src, type_)
 import Html.Events exposing (onClick, onInput)
 
@@ -17,8 +17,8 @@ type alias Model =
     }
 
 
-stateModel : Model
-stateModel =
+initialModel : Model
+initialModel =
     { id = 1
     , inputText = ""
     , recordList = []
@@ -30,43 +30,45 @@ type RecordStatus
     | Complete
 
 
+generateId : Model -> Model
+generateId model =
+    { model | id = model.id + 1 }
+
+
 type alias Record =
     { id : Int, task : String, order : Int, status : RecordStatus }
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( stateModel, Cmd.none )
+    ( initialModel, Cmd.none )
 
 
 
 ---- UPDATE ----
 
 
---addRecord :  -> Record -> Model
+addRecord : List Record -> Record -> List Record
 addRecord records record =
-     List.append records [record ]
+    List.append records [ record ]
 
 
 type Msg
-    = Add 
+    = Add
     | InputText String
-
-
-
---generateId =
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         Add ->
-            ({ model | recordList = addRecord model.recordList { id = model.id, task = model.inputText, order = model.id, status = Active }}
+            ( generateId { model | recordList = addRecord model.recordList { id = model.id, task = model.inputText, order = model.id, status = Active } }
             , Cmd.none
             )
 
         InputText text ->
             ( { model | inputText = text }, Cmd.none )
+
 
 
 ---- VIEW ----
@@ -80,13 +82,32 @@ generateHeader =
         , div [ class "header-input" ]
             [ input [ type_ "text", placeholder "Add a task", name "add-to-do", class "header-add-item-input", onInput InputText ] []
             , button [ class "add-item-btn" ]
-                [ img [ class "header-add-item", src "./icons/plus-black-symbol.svg", onClick Add  ] [] ]
+                [ img [ class "header-add-item", src "./icons/plus-black-symbol.svg", onClick Add ] [] ]
             ]
         ]
 
+
+displayRecord : Record -> Html Msg
+displayRecord record =
+    div []
+        [ h1 [] [ text record.task ]
+        ]
+
+
+displayList : List Record -> Html Msg
+displayList records =
+    div []
+        [ div []
+            (List.map displayRecord records)
+        ]
+
+
 view : Model -> Html Msg
 view model =
-    generateHeader
+    div []
+        [ generateHeader
+        , displayList model.recordList
+        ]
 
 
 
