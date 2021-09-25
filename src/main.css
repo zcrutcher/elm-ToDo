@@ -81,3 +81,42 @@ h1 {
   font-family: "Nunito Sans", sans-serif;
   font-size: 400;
 }
+
+.recordList {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 5px;
+}
+
+.record {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 70vw;
+  align-self: center;
+  background-color: lightblue;
+  border-radius: 12px;
+  margin: 10px;
+  padding: 8px;
+}
+
+.delete-item-btn {
+  background-color: transparent;
+  border: none;
+}
+
+.delete-item-img {
+  max-width: 34px;
+  max-height: 34px;
+}
+
+.delete-item-img:hover {
+  cursor: pointer;
+  transform: scale(1.1);
+}
+
+.task-text {
+  width: 70vw;
+  margin: 5px 20px;
+}

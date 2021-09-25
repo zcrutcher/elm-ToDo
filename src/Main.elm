@@ -55,6 +55,7 @@ addRecord records record =
 
 type Msg
     = Add
+    | Delete Int
     | InputText String
 
 
@@ -65,6 +66,9 @@ update msg model =
             ( generateId { model | recordList = addRecord model.recordList { id = model.id, task = model.inputText, order = model.id, status = Active } }
             , Cmd.none
             )
+
+        Delete id ->
+            ( { model | recordList = List.filter (\rec -> rec.id /= id) model.recordList }, Cmd.none )
 
         InputText text ->
             ( { model | inputText = text }, Cmd.none )
@@ -89,14 +93,17 @@ generateHeader =
 
 displayRecord : Record -> Html Msg
 displayRecord record =
-    div []
-        [ h1 [] [ text record.task ]
+    div [ class "record" ]
+        [ input [ type_ "checkbox" ] []
+        , h1 [ class "task-text" ] [ text record.task ]
+        , button [ class "delete-item-btn" ]
+            [ img [ class "delete-item-img", src "./icons/trash.svg", onClick (Delete record.id) ] [] ]
         ]
 
 
 displayList : List Record -> Html Msg
 displayList records =
-    div []
+    div [ class "recordList" ]
         [ div []
             (List.map displayRecord records)
         ]
