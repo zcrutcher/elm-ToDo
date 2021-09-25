@@ -13,6 +13,8 @@ import Html.Events exposing (onClick, onInput)
 type alias Model =
     { id : Int
     , inputText : String
+    , editText : String
+    , selectedItem : Int
     , recordList : List Record
     }
 
@@ -21,6 +23,8 @@ initialModel : Model
 initialModel =
     { id = 1
     , inputText = ""
+    , editText = ""
+    , selectedItem = 0
     , recordList = []
     }
 
@@ -56,6 +60,7 @@ addRecord records record =
 type Msg
     = Add
     | Delete Int
+    | Edit Int
     | InputText String
 
 
@@ -69,6 +74,9 @@ update msg model =
 
         Delete id ->
             ( { model | recordList = List.filter (\rec -> rec.id /= id) model.recordList }, Cmd.none )
+
+        Edit id ->
+            ( { model | recordList = model.recordList }, Cmd.none )
 
         InputText text ->
             ( { model | inputText = text }, Cmd.none )
@@ -95,7 +103,7 @@ displayRecord : Record -> Html Msg
 displayRecord record =
     div [ class "record" ]
         [ input [ type_ "checkbox" ] []
-        , h1 [ class "task-text" ] [ text record.task ]
+        , h1 [ class "task-text", onClick (Edit record.id) ] [ text record.task ]
         , button [ class "delete-item-btn" ]
             [ img [ class "delete-item-img", src "./icons/trash.svg", onClick (Delete record.id) ] [] ]
         ]
