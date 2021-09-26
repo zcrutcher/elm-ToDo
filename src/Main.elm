@@ -2,8 +2,9 @@ module Main exposing (..)
 
 import Browser
 import Html exposing (Html, button, div, h1, img, input, text)
-import Html.Attributes exposing (class, name, placeholder, src, type_)
+import Html.Attributes exposing (class, name, placeholder, selected, src, type_, value)
 import Html.Events exposing (onClick, onInput)
+import String exposing (fromInt)
 
 
 
@@ -39,6 +40,28 @@ generateId model =
     { model | id = model.id + 1 }
 
 
+toggleStatus : Record -> Record
+toggleStatus record =
+    if record.status == Active then
+        { record | status = Complete }
+
+    else
+        { record | status = Active }
+
+
+toggleRecordStatus : List Record -> Int -> List Record
+toggleRecordStatus records id =
+    List.map
+        (\rec ->
+            if rec.id == id then
+                toggleStatus rec
+
+            else
+                rec
+        )
+        records
+
+
 type alias Record =
     { id : Int, task : String, order : Int, status : RecordStatus }
 
@@ -57,10 +80,31 @@ addRecord records record =
     List.append records [ record ]
 
 
+editRecordText : Record -> String -> Record
+editRecordText rec text =
+    { rec | task = text }
+
+
+editRecordListText : List Record -> Int -> String -> List Record
+editRecordListText records id text =
+    List.map
+        (\rec ->
+            if rec.id == id then
+                editRecordText rec text
+
+            else
+                rec
+        )
+        records
+
+
 type Msg
     = Add
     | Delete Int
-    | Edit Int
+    | Select Int String
+    | Edit Int String
+    | EditText String
+    | ToggleStatus Int
     | InputText String
 
 
@@ -75,8 +119,17 @@ update msg model =
         Delete id ->
             ( { model | recordList = List.filter (\rec -> rec.id /= id) model.recordList }, Cmd.none )
 
-        Edit id ->
-            ( { model | recordList = model.recordList }, Cmd.none )
+        Select id text ->
+            ( { model | selectedItem = id, editText = text }, Cmd.none )
+
+        Edit id text ->
+            ( { model | recordList = editRecordListText model.recordList model.selectedItem text, editText = text, selectedItem = id }, Cmd.none )
+
+        EditText text ->
+            ( { model | recordList = editRecordListText model.recordList model.selectedItem text, editText = text }, Cmd.none )
+
+        ToggleStatus id ->
+            ( { model | recordList = toggleRecordStatus model.recordList id }, Cmd.none )
 
         InputText text ->
             ( { model | inputText = text }, Cmd.none )
@@ -99,21 +152,36 @@ generateHeader =
         ]
 
 
-displayRecord : Record -> Html Msg
-displayRecord record =
+displayInputOrText : Model -> Record -> Html Msg
+displayInputOrText model record =
+    if record.id == model.selectedItem then
+        input
+            [ type_ "text", class "task-text", onInput EditText, value record.task ]
+            []
+
+    else
+        h1
+            [ onClick (Select record.id record.task) ]
+            [ text record.task ]
+
+
+displayRecord : Model -> Record -> Html Msg
+displayRecord mod record =
     div [ class "record" ]
-        [ input [ type_ "checkbox" ] []
-        , h1 [ class "task-text", onClick (Edit record.id) ] [ text record.task ]
+        [ input [ type_ "checkbox", onClick (ToggleStatus record.id) ] []
+
+        --, input [ type_ "text", class "task-text", value record.task, onClick (Edit record.id record.task), onInput EditText ] [ text record.task ]
+        , displayInputOrText mod record
         , button [ class "delete-item-btn" ]
             [ img [ class "delete-item-img", src "./icons/trash.svg", onClick (Delete record.id) ] [] ]
         ]
 
 
-displayList : List Record -> Html Msg
-displayList records =
+displayList : Model -> List Record -> Html Msg
+displayList model records =
     div [ class "recordList" ]
         [ div []
-            (List.map displayRecord records)
+            (List.map (displayRecord model) records)
         ]
 
 
@@ -121,7 +189,7 @@ view : Model -> Html Msg
 view model =
     div []
         [ generateHeader
-        , displayList model.recordList
+        , displayList model model.recordList
         ]
 
 
