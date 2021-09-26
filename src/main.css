@@ -116,7 +116,19 @@ h1 {
   transform: scale(1.1);
 }
 
+/* .task-text {
+  width: 70vw;
+  margin: 5px 20px;
+} */
+
 .task-text {
   width: 70vw;
   margin: 5px 20px;
+  background-color: transparent;
+  border: none;
+}
+
+.task-text:focus {
+  border: none;
+  background-color: transparent;
 }

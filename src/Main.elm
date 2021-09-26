@@ -1,10 +1,11 @@
 module Main exposing (..)
 
 import Browser
+import Browser.Dom as Dom exposing (..)
 import Html exposing (Html, button, div, h1, img, input, text)
-import Html.Attributes exposing (class, name, placeholder, selected, src, type_, value)
-import Html.Events exposing (onClick, onInput)
-import String exposing (fromInt)
+import Html.Attributes exposing (class, id, name, placeholder, selected, src, type_, value)
+import Html.Events exposing (onBlur, onClick, onInput)
+import Task
 
 
 
@@ -98,14 +99,25 @@ editRecordListText records id text =
         records
 
 
+focusInputBox : Int -> Cmd Msg
+focusInputBox id =
+    Task.attempt FocusTest (Dom.focus (String.concat [ "input-id-", String.fromInt id ]))
+
+
+
+--Task.attempt (\_ -> SetFocus initialModel.selectedItem) (Dom.focus (String.concat [ "input-id-", String.fromInt id ]))
+
+
 type Msg
     = Add
     | Delete Int
     | Select Int String
-    | Edit Int String
-    | EditText String
+    | Edit String
     | ToggleStatus Int
     | InputText String
+    | Blur
+    | SetFocus Int
+    | FocusTest (Result Dom.Error ())
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -120,12 +132,11 @@ update msg model =
             ( { model | recordList = List.filter (\rec -> rec.id /= id) model.recordList }, Cmd.none )
 
         Select id text ->
-            ( { model | selectedItem = id, editText = text }, Cmd.none )
+            ( { model | selectedItem = id, editText = text }, focusInputBox id )
 
-        Edit id text ->
-            ( { model | recordList = editRecordListText model.recordList model.selectedItem text, editText = text, selectedItem = id }, Cmd.none )
-
-        EditText text ->
+        -- Edit id text ->
+        --     ( { model | recordList = editRecordListText model.recordList model.selectedItem text, editText = text, selectedItem = id }, Cmd.none )
+        Edit text ->
             ( { model | recordList = editRecordListText model.recordList model.selectedItem text, editText = text }, Cmd.none )
 
         ToggleStatus id ->
@@ -133,6 +144,15 @@ update msg model =
 
         InputText text ->
             ( { model | inputText = text }, Cmd.none )
+
+        Blur ->
+            ( { model | selectedItem = 0 }, Cmd.none )
+
+        SetFocus id ->
+            ( model, focusInputBox id )
+
+        FocusTest result ->
+            ( model, Cmd.none )
 
 
 
@@ -152,26 +172,27 @@ generateHeader =
         ]
 
 
-displayInputOrText : Model -> Record -> Html Msg
-displayInputOrText model record =
-    if record.id == model.selectedItem then
+displayInputOrText : Int -> Record -> Html Msg
+displayInputOrText selected record =
+    if record.id == selected then
         input
-            [ type_ "text", class "task-text", onInput EditText, value record.task ]
+            [ type_ "text", class "task-text", onInput Edit, onBlur Blur, value record.task, id (String.concat [ "input-id-", String.fromInt record.id ]) ]
             []
 
     else
         h1
-            [ onClick (Select record.id record.task) ]
+            [ onClick (Select record.id record.task)
+
+            {- , onClick (SetFocus record.id) -}
+            ]
             [ text record.task ]
 
 
 displayRecord : Model -> Record -> Html Msg
-displayRecord mod record =
+displayRecord model record =
     div [ class "record" ]
         [ input [ type_ "checkbox", onClick (ToggleStatus record.id) ] []
-
-        --, input [ type_ "text", class "task-text", value record.task, onClick (Edit record.id record.task), onInput EditText ] [ text record.task ]
-        , displayInputOrText mod record
+        , displayInputOrText model.selectedItem record
         , button [ class "delete-item-btn" ]
             [ img [ class "delete-item-img", src "./icons/trash.svg", onClick (Delete record.id) ] [] ]
         ]
