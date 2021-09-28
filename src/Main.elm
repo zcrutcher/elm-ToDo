@@ -2,7 +2,7 @@ module Main exposing (..)
 
 import Browser
 import Browser.Dom as Dom exposing (..)
-import Html exposing (Html, button, div, h1, img, input, text)
+import Html exposing (Html, button, div, h3, img, input, text)
 import Html.Attributes exposing (class, id, name, placeholder, selected, src, type_, value)
 import Html.Events exposing (onBlur, onClick, onInput)
 import Task
@@ -124,7 +124,11 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         Add ->
-            ( generateId { model | recordList = addRecord model.recordList { id = model.id, task = model.inputText, order = model.id, status = Active } }
+            ( generateId
+                { model
+                    | recordList = addRecord model.recordList { id = model.id, task = model.inputText, order = model.id, status = Active }
+                    , inputText = ""
+                }
             , Cmd.none
             )
 
@@ -159,13 +163,21 @@ update msg model =
 ---- VIEW ----
 
 
-generateHeader : Html Msg
-generateHeader =
+generateHeader : Model -> Html Msg
+generateHeader model =
     div [ class "header" ]
         [ div [ class "header-title" ] [ text "Elm To-Do App" ]
         , img [ class "header-icon", src "./icons/check.svg" ] []
         , div [ class "header-input" ]
-            [ input [ type_ "text", placeholder "Add a task", name "add-to-do", class "header-add-item-input", onInput InputText ] []
+            [ input
+                [ type_ "text"
+                , placeholder "Add a task"
+                , name "add-to-do"
+                , class "header-add-item-input"
+                , onInput InputText
+                , value model.inputText
+                ]
+                []
             , button [ class "add-item-btn" ]
                 [ img [ class "header-add-item", src "./icons/plus-black-symbol.svg", onClick Add ] [] ]
             ]
@@ -180,7 +192,7 @@ displayInputOrText selected record =
             []
 
     else
-        h1
+        h3
             [ onClick (Select record.id record.task)
 
             {- , onClick (SetFocus record.id) -}
@@ -209,7 +221,7 @@ displayList model records =
 view : Model -> Html Msg
 view model =
     div []
-        [ generateHeader
+        [ generateHeader model
         , displayList model model.recordList
         ]
 
