@@ -2,9 +2,9 @@ module Main exposing (..)
 
 import Browser
 import Browser.Dom as Dom exposing (..)
-import Html exposing (Html, button, div, h3, img, input, text)
+import Html exposing (Html, button, div, form, h3, img, input, text)
 import Html.Attributes exposing (class, id, name, placeholder, selected, src, type_, value)
-import Html.Events exposing (onBlur, onClick, onInput)
+import Html.Events exposing (onBlur, onClick, onInput, onSubmit)
 import Task
 
 
@@ -99,13 +99,23 @@ editRecordListText records id text =
         records
 
 
+recordTaskClass : RecordStatus -> String
+recordTaskClass status =
+    case status of
+        Complete ->
+            "task-complete"
+
+        Active ->
+            "task"
+
+
 focusInputBox : Int -> Cmd Msg
 focusInputBox id =
     Task.attempt FocusTest (Dom.focus (String.concat [ "input-id-", String.fromInt id ]))
 
 
 
---Task.attempt (\_ -> SetFocus initialModel.selectedItem) (Dom.focus (String.concat [ "input-id-", String.fromInt id ]))
+--recordTaskClass : RecordStatus -> String
 
 
 type Msg
@@ -163,6 +173,20 @@ update msg model =
 ---- VIEW ----
 
 
+taskForm : Model -> Html Msg
+taskForm model =
+    div [ class "header" ]
+        [ div [ class "header-title" ] [ text "Elm To-Do App" ]
+        , img [ class "header-icon", src "./icons/check.svg" ] []
+        , form [ class "add-form", onSubmit Add ]
+            [ input [ type_ "image", class "header-add-item testAddImage", src "./icons/plus-black-symbol.svg" ]
+                [ input [ type_ "submit", class "add-item-btn" ] []
+                ]
+            , input [ type_ "text", placeholder "Add a task", class "add-task", value model.inputText, onInput InputText ] []
+            ]
+        ]
+
+
 generateHeader : Model -> Html Msg
 generateHeader model =
     div [ class "header" ]
@@ -194,8 +218,7 @@ displayInputOrText selected record =
     else
         h3
             [ onClick (Select record.id record.task)
-
-            {- , onClick (SetFocus record.id) -}
+            , class (recordTaskClass record.status)
             ]
             [ text record.task ]
 
@@ -221,7 +244,7 @@ displayList model records =
 view : Model -> Html Msg
 view model =
     div []
-        [ generateHeader model
+        [ taskForm model --generateHeader model
         , displayList model model.recordList
         ]
 
