@@ -2,9 +2,10 @@ module Main exposing (..)
 
 import Browser
 import Browser.Dom as Dom exposing (..)
-import Html exposing (Html, button, div, form, h3, img, input, text)
-import Html.Attributes exposing (class, id, name, placeholder, selected, src, type_, value)
+import Html exposing (Html, button, div, form, img, input, text)
+import Html.Attributes exposing (class, id, placeholder, selected, src, type_, value)
 import Html.Events exposing (onBlur, onClick, onInput, onSubmit)
+import Platform.Cmd exposing (none)
 import Task
 
 
@@ -21,6 +22,15 @@ type alias Model =
     }
 
 
+type alias Record =
+    { id : Int, task : String, order : Int, status : RecordStatus }
+
+
+type RecordStatus
+    = Active
+    | Complete
+
+
 initialModel : Model
 initialModel =
     { id = 1
@@ -29,11 +39,6 @@ initialModel =
     , selectedItem = 0
     , recordList = []
     }
-
-
-type RecordStatus
-    = Active
-    | Complete
 
 
 generateId : Model -> Model
@@ -61,10 +66,6 @@ toggleRecordStatus records id =
                 rec
         )
         records
-
-
-type alias Record =
-    { id : Int, task : String, order : Int, status : RecordStatus }
 
 
 init : ( Model, Cmd Msg )
@@ -111,11 +112,7 @@ recordTaskClass status =
 
 focusInputBox : Int -> Cmd Msg
 focusInputBox id =
-    Task.attempt FocusTest (Dom.focus (String.concat [ "input-id-", String.fromInt id ]))
-
-
-
---recordTaskClass : RecordStatus -> String
+    Task.attempt SetFocus (Dom.focus (String.concat [ "input-id-", String.fromInt id ]))
 
 
 type Msg
@@ -126,8 +123,7 @@ type Msg
     | ToggleStatus Int
     | InputText String
     | Blur
-    | SetFocus Int
-    | FocusTest (Result Dom.Error ())
+    | SetFocus (Result Dom.Error ())
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -148,8 +144,6 @@ update msg model =
         Select id text ->
             ( { model | selectedItem = id, editText = text }, focusInputBox id )
 
-        -- Edit id text ->
-        --     ( { model | recordList = editRecordListText model.recordList model.selectedItem text, editText = text, selectedItem = id }, Cmd.none )
         Edit text ->
             ( { model | recordList = editRecordListText model.recordList model.selectedItem text, editText = text }, Cmd.none )
 
@@ -162,10 +156,7 @@ update msg model =
         Blur ->
             ( { model | selectedItem = 0 }, Cmd.none )
 
-        SetFocus id ->
-            ( model, focusInputBox id )
-
-        FocusTest result ->
+        SetFocus result ->
             ( model, Cmd.none )
 
 
@@ -173,8 +164,8 @@ update msg model =
 ---- VIEW ----
 
 
-taskForm : Model -> Html Msg
-taskForm model =
+taskForm : String -> Html Msg
+taskForm taskText =
     div [ class "header" ]
         [ div [ class "header-title" ] [ text "Elm To-Do App" ]
         , img [ class "header-icon", src "./icons/check.svg" ] []
@@ -182,70 +173,55 @@ taskForm model =
             [ input [ type_ "image", class "header-add-item testAddImage", src "./icons/plus-black-symbol.svg" ]
                 [ input [ type_ "submit", class "add-item-btn" ] []
                 ]
-            , input [ type_ "text", placeholder "Add a task", class "add-task", value model.inputText, onInput InputText ] []
+            , input [ type_ "text", placeholder "Add a task", class "add-task", value taskText, onInput InputText ] []
             ]
         ]
 
 
-generateHeader : Model -> Html Msg
-generateHeader model =
-    div [ class "header" ]
-        [ div [ class "header-title" ] [ text "Elm To-Do App" ]
-        , img [ class "header-icon", src "./icons/check.svg" ] []
-        , div [ class "header-input" ]
-            [ input
-                [ type_ "text"
-                , placeholder "Add a task"
-                , name "add-to-do"
-                , class "header-add-item-input"
-                , onInput InputText
-                , value model.inputText
-                ]
-                []
-            , button [ class "add-item-btn" ]
-                [ img [ class "header-add-item", src "./icons/plus-black-symbol.svg", onClick Add ] [] ]
-            ]
-        ]
-
-
-displayInputOrText : Int -> Record -> Html Msg
-displayInputOrText selected record =
-    if record.id == selected then
+displayInputOrText : Int -> Int -> String -> RecordStatus -> Html Msg
+displayInputOrText selected recordId task status =
+    if recordId == selected then
         input
-            [ type_ "text", class "task-text", onInput Edit, onBlur Blur, value record.task, id (String.concat [ "input-id-", String.fromInt record.id ]) ]
+            [ type_ "text", class "task-text", onInput Edit, onBlur Blur, value task, id (String.concat [ "input-id-", String.fromInt recordId ]) ]
             []
 
     else
-        h3
-            [ onClick (Select record.id record.task)
-            , class (recordTaskClass record.status)
+        div
+            [ onClick (Select recordId task)
+            , class (recordTaskClass status)
+            , class " task-text"
             ]
-            [ text record.task ]
+            [ text task ]
 
 
-displayRecord : Model -> Record -> Html Msg
-displayRecord model record =
-    div [ class "record" ]
-        [ input [ type_ "checkbox", onClick (ToggleStatus record.id) ] []
-        , displayInputOrText model.selectedItem record
-        , button [ class "delete-item-btn" ]
-            [ img [ class "delete-item-img", src "./icons/trash.svg", onClick (Delete record.id) ] [] ]
-        ]
-
-
-displayList : Model -> List Record -> Html Msg
-displayList model records =
+displayList : Int -> List Record -> Html Msg
+displayList selected records =
+    let
+        displayRecord : Int -> Record -> Html Msg
+        displayRecord selectedId record =
+            div [ class "record" ]
+                [ input
+                    [ type_ "checkbox"
+                    , onClick (ToggleStatus record.id)
+                    , class "round-checkbox"
+                    ]
+                    []
+                , displayInputOrText selectedId record.id record.task record.status
+                , button [ class "delete-item-btn" ]
+                    [ img [ class "delete-item-img", src "./icons/trash.svg", onClick (Delete record.id) ] [] ]
+                ]
+    in
     div [ class "recordList" ]
         [ div []
-            (List.map (displayRecord model) records)
+            (List.map (displayRecord selected) records)
         ]
 
 
 view : Model -> Html Msg
 view model =
     div []
-        [ taskForm model --generateHeader model
-        , displayList model model.recordList
+        [ taskForm model.inputText
+        , displayList model.selectedItem model.recordList
         ]
 
 
