@@ -2,8 +2,8 @@ module Main exposing (..)
 
 import Browser
 import Browser.Dom as Dom exposing (..)
-import Html exposing (Html, button, div, form, img, input, text)
-import Html.Attributes exposing (class, id, placeholder, selected, src, type_, value)
+import Html exposing (Attribute, Html, button, div, form, h3, hr, img, input, text)
+import Html.Attributes exposing (checked, class, id, placeholder, selected, src, type_, value)
 import Html.Events exposing (onBlur, onClick, onInput, onSubmit)
 import Platform.Cmd exposing (none)
 import Task
@@ -194,6 +194,55 @@ displayInputOrText selected recordId task status =
             [ text task ]
 
 
+completeTaskCheck : Record -> Bool
+completeTaskCheck record =
+    record.status == Complete
+
+
+activeTaskCheck : Record -> Bool
+activeTaskCheck record =
+    record.status == Active
+
+
+completeTasks : List Record -> List Record
+completeTasks records =
+    List.filter completeTaskCheck records
+
+
+activeTasks : List Record -> List Record
+activeTasks records =
+    List.filter activeTaskCheck records
+
+
+checkedCheck : RecordStatus -> Bool
+checkedCheck status =
+    status == Complete
+
+
+activeCategoryLabel : List Record -> Html Msg
+activeCategoryLabel records =
+    if List.length (activeTasks records) > 0 then
+        div []
+            [ h3 [ class "category-labels" ] [ text "Tasks" ]
+            , hr [] []
+            ]
+
+    else
+        text ""
+
+
+completeCategoryLabel : List Record -> Html Msg
+completeCategoryLabel records =
+    if List.length (completeTasks records) > 0 then
+        div []
+            [ h3 [ class "category-labels" ] [ text "Completed" ]
+            , hr [] []
+            ]
+
+    else
+        text ""
+
+
 displayList : Int -> List Record -> Html Msg
 displayList selected records =
     let
@@ -204,6 +253,7 @@ displayList selected records =
                     [ type_ "checkbox"
                     , onClick (ToggleStatus record.id)
                     , class "round-checkbox"
+                    , checked (checkedCheck record.status)
                     ]
                     []
                 , displayInputOrText selectedId record.id record.task record.status
@@ -212,8 +262,12 @@ displayList selected records =
                 ]
     in
     div [ class "recordList" ]
-        [ div []
-            (List.map (displayRecord selected) records)
+        [ activeCategoryLabel records
+        , div [ class "active-task-list" ]
+            (List.map (displayRecord selected) (activeTasks records))
+        , completeCategoryLabel records
+        , div [ class "complete-task-list" ]
+            (List.map (displayRecord selected) (completeTasks records))
         ]
 
 

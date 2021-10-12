@@ -81,7 +81,7 @@ h1 {
 
 .recordList {
   width: 100%;
-  display: flex;
+  /* display: flex; */
   justify-content: center;
   margin-top: 5px;
 }
@@ -161,7 +161,7 @@ h1 {
   border-style: solid;
   border-width: 3px;
   border-color: lightblue;
-  width: 50%;
+  width: 75%;
   align-self: center;
   border-radius: 7px;
   padding: 5px;
@@ -185,4 +185,23 @@ h1 {
 
 .round-checkbox:checked {
   background-color: #00578f;
+}
+
+.active-task-list {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-content: center;
+}
+
+.complete-task-list {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-content: center;
+}
+
+.category-labels {
+  text-align: left;
+  padding-left: 15%;
 }
