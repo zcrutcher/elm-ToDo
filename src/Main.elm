@@ -2,7 +2,7 @@ module Main exposing (..)
 
 import Browser
 import Browser.Dom as Dom exposing (..)
-import Html exposing (Attribute, Html, button, div, form, h3, hr, img, input, text)
+import Html exposing (Attribute, Html, button, div, form, h3, h5, hr, img, input, text)
 import Html.Attributes exposing (checked, class, id, placeholder, selected, src, type_, value)
 import Html.Events exposing (onBlur, onClick, onInput, onSubmit)
 import Platform.Cmd exposing (none)
@@ -124,6 +124,7 @@ type Msg
     | InputText String
     | Blur
     | SetFocus (Result Dom.Error ())
+    | ClearCompleted
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -155,6 +156,9 @@ update msg model =
 
         Blur ->
             ( { model | selectedItem = 0 }, Cmd.none )
+
+        ClearCompleted ->
+            ( { model | recordList = activeTasks model.recordList }, Cmd.none )
 
         SetFocus result ->
             ( model, Cmd.none )
@@ -214,8 +218,8 @@ activeTasks records =
     List.filter activeTaskCheck records
 
 
-checkedCheck : RecordStatus -> Bool
-checkedCheck status =
+completedCheck : RecordStatus -> Bool
+completedCheck status =
     status == Complete
 
 
@@ -236,6 +240,11 @@ completeCategoryLabel records =
     if List.length (completeTasks records) > 0 then
         div []
             [ h3 [ class "category-labels" ] [ text "Completed" ]
+            , h5
+                [ onClick ClearCompleted
+                , class "clear-completed"
+                ]
+                [ text "Clear Completed Tasks" ]
             , hr [] []
             ]
 
@@ -253,7 +262,7 @@ displayList selected records =
                     [ type_ "checkbox"
                     , onClick (ToggleStatus record.id)
                     , class "round-checkbox"
-                    , checked (checkedCheck record.status)
+                    , checked (completedCheck record.status)
                     ]
                     []
                 , displayInputOrText selectedId record.id record.task record.status
