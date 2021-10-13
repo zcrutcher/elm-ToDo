@@ -2,7 +2,7 @@ module Main exposing (..)
 
 import Browser
 import Browser.Dom as Dom exposing (..)
-import Html exposing (Attribute, Html, button, div, form, h3, h5, hr, img, input, text)
+import Html exposing (Html, button, div, form, h3, h5, hr, img, input, text)
 import Html.Attributes exposing (checked, class, id, placeholder, selected, src, type_, value)
 import Html.Events exposing (onBlur, onClick, onInput, onSubmit)
 import Platform.Cmd exposing (none)
@@ -174,7 +174,7 @@ taskForm taskText =
         [ div [ class "header-title" ] [ text "Elm To-Do App" ]
         , img [ class "header-icon", src "./icons/check.svg" ] []
         , form [ class "add-form", onSubmit Add ]
-            [ input [ type_ "image", class "header-add-item testAddImage", src "./icons/plus-black-symbol.svg" ]
+            [ input [ type_ "image", class "header-add-item", src "./icons/plus-black-symbol.svg" ]
                 [ input [ type_ "submit", class "add-item-btn" ] []
                 ]
             , input [ type_ "text", placeholder "Add a task", class "add-task", value taskText, onInput InputText ] []
@@ -239,12 +239,14 @@ completeCategoryLabel : List Record -> Html Msg
 completeCategoryLabel records =
     if List.length (completeTasks records) > 0 then
         div []
-            [ h3 [ class "category-labels" ] [ text "Completed" ]
-            , h5
-                [ onClick ClearCompleted
-                , class "clear-completed"
+            [ div [ class "complete-task-wrapper" ]
+                [ h3 [ class "category-labels" ] [ text "Completed" ]
+                , h5
+                    [ onClick ClearCompleted
+                    , class "clear-completed"
+                    ]
+                    [ text "Clear Completed Tasks" ]
                 ]
-                [ text "Clear Completed Tasks" ]
             , hr [] []
             ]
 

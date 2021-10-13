@@ -81,7 +81,6 @@ h1 {
 
 .recordList {
   width: 100%;
-  /* display: flex; */
   justify-content: center;
   margin-top: 5px;
 }
@@ -123,7 +122,6 @@ h1 {
   margin: 5px 20px;
   background-color: transparent;
   border: none;
-  /* font-size: 2em; */
   font-size: 16px;
   margin-block-start: 0.67em;
   margin-block-end: 0.67em;
@@ -134,11 +132,6 @@ h1 {
   outline: none;
 }
 
-.task-text:focus {
-  border: none;
-  background-color: transparent;
-}
-/* New test stuff */
 .add-task {
   background: transparent;
   border: none;
@@ -202,16 +195,25 @@ h1 {
 }
 
 .category-labels {
+  margin-left: 15%;
   text-align: left;
-  padding-left: 15%;
 }
 
 .clear-completed {
   width: 150px;
   background-color: #4aaff7;
   border-radius: 5px;
+  margin-right: 15%;
+  padding: 10px;
 }
 
 .clear-completed:hover {
   cursor: pointer;
+  box-shadow: 0 0 11px rgba(33, 33, 33, 0.2);
+}
+
+.complete-task-wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
