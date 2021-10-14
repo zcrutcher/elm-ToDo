@@ -2,10 +2,11 @@ module Main exposing (..)
 
 import Browser
 import Browser.Dom as Dom exposing (..)
-import Html exposing (Html, button, div, form, h3, h5, hr, img, input, text)
+import Html exposing (Html, button, div, form, h3, hr, img, input, text)
 import Html.Attributes exposing (checked, class, id, placeholder, selected, src, type_, value)
 import Html.Events exposing (onBlur, onClick, onInput, onSubmit)
 import Platform.Cmd exposing (none)
+import String exposing (trim)
 import Task
 
 
@@ -79,7 +80,11 @@ init =
 
 addRecord : List Record -> Record -> List Record
 addRecord records record =
-    List.append records [ record ]
+    if String.isEmpty (trim record.task) then
+        records
+
+    else
+        List.append records [ record ]
 
 
 editRecordText : Record -> String -> Record
@@ -241,11 +246,11 @@ completeCategoryLabel records =
         div []
             [ div [ class "complete-task-wrapper" ]
                 [ h3 [ class "category-labels" ] [ text "Completed" ]
-                , h5
+                , button
                     [ onClick ClearCompleted
                     , class "clear-completed"
                     ]
-                    [ text "Clear Completed Tasks" ]
+                    [ text "Clear Completed" ]
                 ]
             , hr [] []
             ]
