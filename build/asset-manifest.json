@@ -1,0 +1,19 @@
+{
+  "main.css": "/elm-ToDo/static/css/main.ba0e5ff8.chunk.css",
+  "main.js": "/elm-ToDo/static/js/main.d7cc0314.chunk.js",
+  "main.js.map": "/elm-ToDo/static/js/main.d7cc0314.chunk.js.map",
+  "runtime~main.js": "/elm-ToDo/static/js/runtime~main.76934828.js",
+  "runtime~main.js.map": "/elm-ToDo/static/js/runtime~main.76934828.js.map",
+  "vendors~main.js": "/elm-ToDo/static/js/vendors~main.0b49ec49.chunk.js",
+  "vendors~main.js.map": "/elm-ToDo/static/js/vendors~main.0b49ec49.chunk.js.map",
+  "./service-worker.js": "/elm-ToDo/./service-worker.js",
+  "elm.js": "/elm-ToDo/elm.js",
+  "favicon.ico": "/elm-ToDo/favicon.ico",
+  "icons/check.svg": "/elm-ToDo/icons/check.svg",
+  "icons/plus-black-symbol.svg": "/elm-ToDo/icons/plus-black-symbol.svg",
+  "icons/trash.svg": "/elm-ToDo/icons/trash.svg",
+  "index.html": "/elm-ToDo/index.html",
+  "logo.svg": "/elm-ToDo/logo.svg",
+  "manifest.json": "/elm-ToDo/manifest.json",
+  "precache-manifest.490dcf64d1ada982e3845d06e1d73e5b.js": "/elm-ToDo/precache-manifest.490dcf64d1ada982e3845d06e1d73e5b.js"
+}
