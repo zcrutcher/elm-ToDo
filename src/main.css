@@ -1,0 +1,216 @@
+/*
+  elm-hot creates an additional div wrapper around the app to make HMR possible.
+  This could break styling in development mode if you are using Elm UI.
+
+  More context in the issue:
+    https://github.com/halfzebra/create-elm-app/issues/320
+*/
+[data-elm-hot="true"] {
+  height: inherit;
+}
+
+body {
+  font-family: "Source Sans Pro", "Trebuchet MS", "Lucida Grande",
+    "Bitstream Vera Sans", "Helvetica Neue", sans-serif;
+  margin: 0;
+  text-align: center;
+  color: #293c4b;
+}
+
+h1 {
+  font-size: 30px;
+}
+
+.header {
+  background-image: linear-gradient(to bottom, #e4ecf2, #30a7fe);
+  width: 100%;
+  height: 33%vh;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 12px;
+}
+
+.header-input {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.header-icon {
+  max-height: 60px;
+  max-width: 75px;
+  align-self: center;
+}
+
+.add-item-btn {
+  background-color: transparent;
+  border: none;
+}
+
+.header-add-item {
+  max-width: 18px;
+  max-height: 24px;
+  background-color: rgb(231, 211, 184);
+  padding: 8px;
+  border-radius: 8px;
+}
+
+.header-add-item:hover {
+  cursor: pointer;
+  transform: scale(1.1);
+}
+
+.header-title {
+  font-size: 48px;
+  font-family: "Nunito Sans", sans-serif;
+  font-weight: 800;
+}
+
+.header-add-item-input {
+  height: 35px;
+  align-self: center;
+  margin: 10px;
+  padding-left: 10px;
+  min-width: 300px;
+  max-width: 450px;
+  font-size: 16px;
+  border-radius: 5px;
+  font-family: "Nunito Sans", sans-serif;
+  font-size: 400;
+}
+
+.recordList {
+  width: 100%;
+  justify-content: center;
+  margin-top: 5px;
+}
+
+.record {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 70vw;
+  align-self: center;
+  background-color: #4aaff7;
+  border-radius: 12px;
+  margin: 10px;
+  padding: 8px;
+}
+
+.record:hover .delete-item-btn {
+  visibility: visible;
+}
+
+.delete-item-btn {
+  background-color: transparent;
+  border: none;
+  visibility: hidden;
+}
+
+.delete-item-img {
+  max-width: 24px;
+  max-height: 24px;
+}
+
+.delete-item-img:hover {
+  cursor: pointer;
+  transform: scale(1.1);
+}
+
+.task-text {
+  width: 70vw;
+  margin: 5px 20px;
+  background-color: transparent;
+  border: none;
+  font-size: 16px;
+  margin-block-start: 0.67em;
+  margin-block-end: 0.67em;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+  font-weight: bold;
+  text-align: center;
+  outline: none;
+}
+
+.add-task {
+  background: transparent;
+  border: none;
+  outline: none;
+  padding-left: 20px;
+  font-size: 16px;
+  color: black;
+  width: 100%;
+}
+
+.add-form {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  border-style: solid;
+  border-width: 3px;
+  border-color: lightblue;
+  width: 75%;
+  align-self: center;
+  border-radius: 7px;
+  padding: 5px;
+  margin: 5px;
+  background-color: white;
+}
+
+.task-complete {
+  text-decoration: line-through;
+}
+
+.round-checkbox {
+  width: 1.8em;
+  height: 1.6em;
+  background-color: white;
+  border-radius: 18%;
+  vertical-align: middle;
+  -webkit-appearance: none;
+  outline: none;
+  cursor: pointer;
+}
+
+.round-checkbox:checked {
+  background-color: #00578f;
+}
+
+.active-task-list {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-content: center;
+}
+
+.complete-task-list {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-content: center;
+}
+
+.category-labels {
+  margin-left: 15%;
+  text-align: left;
+}
+
+.clear-completed {
+  width: 135px;
+  background-color: #4aaff7;
+  border-radius: 5px;
+  margin-right: 15%;
+  padding: 10px;
+}
+
+.clear-completed:hover {
+  cursor: pointer;
+  box-shadow: 0 0 11px rgba(33, 33, 33, 0.2);
+}
+
+.complete-task-wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
