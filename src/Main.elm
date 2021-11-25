@@ -2,9 +2,10 @@ module Main exposing (..)
 
 import Browser
 import Browser.Dom as Dom exposing (..)
-import Html exposing (Html, button, div, form, h3, hr, img, input, text)
+import Html exposing (Html, button, div, form, h3, hr, img, input, li, text, ul)
 import Html.Attributes exposing (checked, class, id, placeholder, selected, src, type_, value)
 import Html.Events exposing (onBlur, onClick, onInput, onSubmit)
+import Html.Extra as Html exposing (nothing, viewIf)
 import Platform.Cmd exposing (none)
 import String exposing (trim)
 import Task
@@ -177,12 +178,13 @@ taskForm : String -> Html Msg
 taskForm taskText =
     div [ class "header" ]
         [ div [ class "header-title" ] [ text "Elm To-Do App" ]
-        , img [ class "header-icon", src "./icons/check.svg" ] []
-        , form [ class "add-form", onSubmit Add ]
-            [ input [ type_ "image", class "header-add-item", src "./icons/plus-black-symbol.svg" ]
-                [ input [ type_ "submit", class "add-item-btn" ] []
+        , div [ class "form-wrapper" ]
+            [ form [ class "form", onSubmit Add ]
+                [ input [ type_ "image", class "add-img", src "./icons/plus-black-symbol.svg" ]
+                    [ input [ type_ "submit", class "add-item-btn" ] []
+                    ]
+                , input [ type_ "text", placeholder "Add a task", class "add-task", value taskText, onInput InputText ] []
                 ]
-            , input [ type_ "text", placeholder "Add a task", class "add-task", value taskText, onInput InputText ] []
             ]
         ]
 
@@ -191,7 +193,13 @@ displayInputOrText : Int -> Int -> String -> RecordStatus -> Html Msg
 displayInputOrText selected recordId task status =
     if recordId == selected then
         input
-            [ type_ "text", class "task-text", onInput Edit, onBlur Blur, value task, id (String.concat [ "input-id-", String.fromInt recordId ]) ]
+            [ type_ "text"
+            , class "task-text"
+            , onInput Edit
+            , onBlur Blur
+            , value task
+            , id (String.concat [ "input-id-", String.fromInt recordId ])
+            ]
             []
 
     else
@@ -228,35 +236,28 @@ completedCheck status =
     status == Complete
 
 
-activeCategoryLabel : List Record -> Html Msg
-activeCategoryLabel records =
-    if List.length (activeTasks records) > 0 then
-        div []
-            [ h3 [ class "category-labels" ] [ text "Tasks" ]
-            , hr [] []
+activeCategoryLabel : Int -> Html Msg
+activeCategoryLabel count =
+    div [ class "label" ]
+        [ h3 [ class "category-labels" ] [ text (String.concat [ "Tasks - ", String.fromInt count ]) ]
+        , hr [] []
+        ]
+
+
+completeCategoryLabel : Html Msg
+completeCategoryLabel =
+    div []
+        [ div [ class "complete-task-wrapper" ]
+            [ h3 [ class "category-labels" ]
+                [ text "Completed" ]
+            , button
+                [ class "clear-completed", onClick ClearCompleted ]
+                [ text "Clear Completed" ]
             ]
-
-    else
-        text ""
-
-
-completeCategoryLabel : List Record -> Html Msg
-completeCategoryLabel records =
-    if List.length (completeTasks records) > 0 then
-        div []
-            [ div [ class "complete-task-wrapper" ]
-                [ h3 [ class "category-labels" ] [ text "Completed" ]
-                , button
-                    [ onClick ClearCompleted
-                    , class "clear-completed"
-                    ]
-                    [ text "Clear Completed" ]
-                ]
-            , hr [] []
-            ]
-
-    else
-        text ""
+        , hr
+            []
+            []
+        ]
 
 
 displayList : Int -> List Record -> Html Msg
@@ -264,7 +265,7 @@ displayList selected records =
     let
         displayRecord : Int -> Record -> Html Msg
         displayRecord selectedId record =
-            div [ class "record" ]
+            li [ class "record" ]
                 [ input
                     [ type_ "checkbox"
                     , onClick (ToggleStatus record.id)
@@ -277,13 +278,11 @@ displayList selected records =
                     [ img [ class "delete-item-img", src "./icons/trash.svg", onClick (Delete record.id) ] [] ]
                 ]
     in
-    div [ class "recordList" ]
-        [ activeCategoryLabel records
-        , div [ class "active-task-list" ]
-            (List.map (displayRecord selected) (activeTasks records))
-        , completeCategoryLabel records
-        , div [ class "complete-task-list" ]
-            (List.map (displayRecord selected) (completeTasks records))
+    div [ class "holder" ]
+        [ viewIf (List.length (activeTasks records) > 0) (activeCategoryLabel (List.length (activeTasks records)))
+        , ul [] (List.map (displayRecord selected) (activeTasks records))
+        , viewIf (List.length (completeTasks records) > 0) completeCategoryLabel
+        , ul [] (List.map (displayRecord selected) (completeTasks records))
         ]
 
 
@@ -291,7 +290,8 @@ view : Model -> Html Msg
 view model =
     div []
         [ taskForm model.inputText
-        , displayList model.selectedItem model.recordList
+        , displayList model.selectedItem
+            model.recordList
         ]
 
 

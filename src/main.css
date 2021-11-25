@@ -8,38 +8,90 @@
 [data-elm-hot="true"] {
   height: inherit;
 }
+* {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
 
 body {
   font-family: "Source Sans Pro", "Trebuchet MS", "Lucida Grande",
     "Bitstream Vera Sans", "Helvetica Neue", sans-serif;
   margin: 0;
-  text-align: center;
+  padding: 0;
+  /* text-align: center; */
   color: #293c4b;
+}
+.test {
+  display: flex;
+  flex-basis: 85%;
+  background-color: turquoise;
+}
+/* variables */
+:root {
+  --header-color: lightgray;
+  --tablet: 550px;
+  --desktop: 850px;
+}
+
+/* Global */
+.form-wrapper {
+  display: flex;
+  flex-flow: row nowrap;
+  flex-basis: 100%;
+}
+.form {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  margin: auto;
+  outline: whitesmoke;
+  outline: 2px solid black;
+  padding: 8px;
+  border-radius: 8px;
+}
+
+.add-img {
+  max-width: 18px;
+  max-height: 24px;
+  background-color: rgb(231, 211, 184);
+  border-radius: 8px;
+  padding: 8px;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+}
+
+.add-task {
+  width: 100%;
+  outline: none;
+  border: none;
+  background-color: transparent;
+  padding-left: 15px;
+}
+
+.header {
+  background-color: var(--header-color);
+  width: 100%;
+  height: 33%vh;
+  text-align: center;
+  padding: 15px 0 25px 0;
 }
 
 h1 {
   font-size: 30px;
 }
 
-.header {
-  background-image: linear-gradient(to bottom, #e4ecf2, #30a7fe);
-  width: 100%;
-  height: 33%vh;
-  display: flex;
-  flex-direction: column;
-  padding-bottom: 12px;
-}
-
-.header-input {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-}
-
-.header-icon {
-  max-height: 60px;
-  max-width: 75px;
-  align-self: center;
+.header-title {
+  padding-bottom: 20px;
+  font-size: 48px;
+  font-family: "Nunito Sans", sans-serif;
+  font-weight: 800;
 }
 
 .add-item-btn {
@@ -47,54 +99,78 @@ h1 {
   border: none;
 }
 
-.header-add-item {
-  max-width: 18px;
-  max-height: 24px;
-  background-color: rgb(231, 211, 184);
-  padding: 8px;
-  border-radius: 8px;
-}
-
-.header-add-item:hover {
-  cursor: pointer;
-  transform: scale(1.1);
-}
-
-.header-title {
-  font-size: 48px;
-  font-family: "Nunito Sans", sans-serif;
-  font-weight: 800;
-}
-
-.header-add-item-input {
-  height: 35px;
-  align-self: center;
-  margin: 10px;
-  padding-left: 10px;
-  min-width: 300px;
-  max-width: 450px;
-  font-size: 16px;
-  border-radius: 5px;
-  font-family: "Nunito Sans", sans-serif;
-  font-size: 400;
-}
-
-.recordList {
+ul {
+  padding: 0;
+  margin: 0;
   width: 100%;
-  justify-content: center;
-  margin-top: 5px;
 }
 
 .record {
   display: flex;
-  justify-content: space-evenly;
+  flex-flow: row nowrap;
+  justify-content: space-between;
   align-items: center;
-  width: 70vw;
-  align-self: center;
-  background-color: #4aaff7;
-  border-radius: 12px;
-  margin: 10px;
   padding: 8px;
+  background-color: turquoise;
+  width: 85%;
+  margin: auto;
+  margin-bottom: 15px;
+  border-radius: 8px;
+}
+
+.complete-task-list {
+  display: flex;
+  flex-flow: column nowrap;
+  flex-direction: column;
+  justify-content: center;
+  align-content: center;
+}
+
+/* Mobile CSS */
+
+.form {
+  flex-basis: 85%;
+}
+.record {
+  width: 85%;
+}
+
+.add-task {
+  font-size: 1.2rem;
+}
+
+.label {
+  width: 85%;
+  background-color: wheat;
+  margin: auto;
+}
+
+/* Tablet CSS */
+@media (min-width: 550px) {
+  .form {
+    flex-basis: 75%;
+  }
+  .record {
+    width: 75%;
+  }
+  .add-task {
+    font-size: 1.1rem;
+  }
+  .label {
+    width: 75%;
+  }
+}
+
+@media (min-width: 850px) {
+  .form {
+    flex-basis: 65%;
+  }
+  .record {
+    width: 65%;
+  }
+  .label {
+    width: 66%;
+  }
 }
 
 .record:hover .delete-item-btn {
@@ -132,16 +208,6 @@ h1 {
   outline: none;
 }
 
-.add-task {
-  background: transparent;
-  border: none;
-  outline: none;
-  padding-left: 20px;
-  font-size: 16px;
-  color: black;
-  width: 100%;
-}
-
 .add-form {
   display: flex;
   justify-content: flex-start;
@@ -176,22 +242,7 @@ h1 {
   background-color: #00578f;
 }
 
-.active-task-list {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-content: center;
-}
-
-.complete-task-list {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-content: center;
-}
-
 .category-labels {
-  margin-left: 15%;
   text-align: left;
 }
 
@@ -210,7 +261,7 @@ h1 {
 
 .complete-task-wrapper {
   display: flex;
-  flex-direction: row;
+  flex-flow: row nowrap;
   justify-content: space-between;
   align-items: center;
 }
