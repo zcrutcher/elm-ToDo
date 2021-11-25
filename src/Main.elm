@@ -240,23 +240,17 @@ activeCategoryLabel : Int -> Html Msg
 activeCategoryLabel count =
     div [ class "label" ]
         [ h3 [ class "category-labels" ] [ text (String.concat [ "Tasks - ", String.fromInt count ]) ]
-        , hr [] []
         ]
 
 
-completeCategoryLabel : Html Msg
-completeCategoryLabel =
-    div []
-        [ div [ class "complete-task-wrapper" ]
-            [ h3 [ class "category-labels" ]
-                [ text "Completed" ]
-            , button
-                [ class "clear-completed", onClick ClearCompleted ]
-                [ text "Clear Completed" ]
-            ]
-        , hr
-            []
-            []
+completeCategoryLabel : Int -> Html Msg
+completeCategoryLabel count =
+    div [ class "complete-label" ]
+        [ h3 [ class "category-labels" ]
+            [ text (String.concat [ "Completed - ", String.fromInt count ]) ]
+        , button
+            [ class "clear-completed", onClick ClearCompleted ]
+            [ text "Clear Completed" ]
         ]
 
 
@@ -281,7 +275,7 @@ displayList selected records =
     div [ class "holder" ]
         [ viewIf (List.length (activeTasks records) > 0) (activeCategoryLabel (List.length (activeTasks records)))
         , ul [] (List.map (displayRecord selected) (activeTasks records))
-        , viewIf (List.length (completeTasks records) > 0) completeCategoryLabel
+        , viewIf (List.length (completeTasks records) > 0) (completeCategoryLabel (List.length (completeTasks records)))
         , ul [] (List.map (displayRecord selected) (completeTasks records))
         ]
 

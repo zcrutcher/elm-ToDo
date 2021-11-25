@@ -59,7 +59,8 @@ body {
 .add-img {
   max-width: 18px;
   max-height: 24px;
-  background-color: rgb(231, 211, 184);
+  /* background-color: rgb(231, 211, 184); */
+  background-color: turquoise;
   border-radius: 8px;
   padding: 8px;
   display: flex;
@@ -126,6 +127,28 @@ ul {
   align-content: center;
 }
 
+.clear-completed:hover {
+  cursor: pointer;
+  box-shadow: 0 0 11px rgba(33, 33, 33, 0.2);
+}
+
+.complete-label {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  margin: auto;
+}
+
+.clear-completed {
+  width: 120px;
+  background-color: #e040a0;
+  border-radius: 8px;
+  padding: 6px;
+  height: 20px;
+  align-self: center;
+  border: none;
+}
+
 /* Mobile CSS */
 
 .form {
@@ -140,9 +163,12 @@ ul {
 }
 
 .label {
-  width: 85%;
-  background-color: wheat;
+  width: 87%;
   margin: auto;
+}
+
+.complete-label {
+  width: 87%;
 }
 
 /* Tablet CSS */
@@ -157,7 +183,19 @@ ul {
     font-size: 1.1rem;
   }
   .label {
+    width: 76%;
+  }
+  .complete-label {
+    width: 76%;
+  }
+
+  .complete-task-wrapper {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    align-items: center;
     width: 75%;
+    margin: auto;
   }
 }
 
@@ -169,6 +207,10 @@ ul {
     width: 65%;
   }
   .label {
+    width: 66%;
+  }
+
+  .complete-label {
     width: 66%;
   }
 }
@@ -239,29 +281,5 @@ ul {
 }
 
 .round-checkbox:checked {
-  background-color: #00578f;
-}
-
-.category-labels {
-  text-align: left;
-}
-
-.clear-completed {
-  width: 135px;
-  background-color: #4aaff7;
-  border-radius: 5px;
-  margin-right: 15%;
-  padding: 10px;
-}
-
-.clear-completed:hover {
-  cursor: pointer;
-  box-shadow: 0 0 11px rgba(33, 33, 33, 0.2);
-}
-
-.complete-task-wrapper {
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: space-between;
-  align-items: center;
+  background-color: #e040a0;
 }
