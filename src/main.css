@@ -24,8 +24,8 @@ body {
     "Bitstream Vera Sans", "Helvetica Neue", sans-serif;
   margin: 0;
   padding: 0;
-  /* text-align: center; */
   color: #293c4b;
+  height: 95vh;
 }
 .test {
   display: flex;
@@ -149,6 +149,11 @@ ul {
   align-self: center;
   border: none;
   color: black;
+}
+
+.footer {
+  background-color: var(--header-color);
+  text-align: center;
 }
 
 /* Mobile CSS */

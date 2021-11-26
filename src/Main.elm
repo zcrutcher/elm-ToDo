@@ -2,8 +2,8 @@ module Main exposing (..)
 
 import Browser
 import Browser.Dom as Dom exposing (..)
-import Html exposing (Html, button, div, form, h3, hr, img, input, li, text, ul)
-import Html.Attributes exposing (checked, class, id, placeholder, selected, src, type_, value)
+import Html exposing (Html, a, button, div, form, h3, hr, img, input, li, text, ul)
+import Html.Attributes exposing (checked, class, href, id, placeholder, selected, src, title, type_, value)
 import Html.Events exposing (onBlur, onClick, onInput, onSubmit)
 import Html.Extra as Html exposing (nothing, viewIf)
 import Platform.Cmd exposing (none)
@@ -301,6 +301,18 @@ displayList selected records =
             (taskCount Complete records > 0)
             (taskCount Complete records |> completeCategoryLabel)
         , ul [] (List.map (displayRecord selected) (taskList Complete records))
+        ]
+
+
+footer : Html Msg
+footer =
+    div [ class "footer" ]
+        [ div []
+            [ text "Icons made by "
+            , a [ href "https://www.flaticon.com/authors/dave-gandy", title "Dave Gandy" ] [ text "Dave Gandy " ]
+            , text " from "
+            , a [ href "https://www.flaticon.com/", title "Flaticon" ] [ text "www.flaticon.com" ]
+            ]
         ]
 
 
