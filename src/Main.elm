@@ -304,18 +304,6 @@ displayList selected records =
         ]
 
 
-footer : Html Msg
-footer =
-    div [ class "footer" ]
-        [ div []
-            [ text "Icons made by "
-            , a [ href "https://www.flaticon.com/authors/dave-gandy", title "Dave Gandy" ] [ text "Dave Gandy " ]
-            , text " from "
-            , a [ href "https://www.flaticon.com/", title "Flaticon" ] [ text "www.flaticon.com" ]
-            ]
-        ]
-
-
 view : Model -> Html Msg
 view model =
     div []
