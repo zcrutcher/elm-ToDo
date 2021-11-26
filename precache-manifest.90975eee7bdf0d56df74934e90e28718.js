@@ -28,7 +28,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/elm-ToDo/icons/trash.svg"
   },
   {
-    "revision": "2a03387dac1361ecd52458c50449d88d",
+    "revision": "bd31cb3cf7e07c711eae09080d9b139f",
     "url": "/elm-ToDo/index.html"
   },
   {
@@ -40,12 +40,12 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/elm-ToDo/manifest.json"
   },
   {
-    "revision": "77d62abc2d793ed536d2",
-    "url": "/elm-ToDo/static/css/main.8c60888e.chunk.css"
+    "revision": "04bdec6aaa49033d2ef2",
+    "url": "/elm-ToDo/static/css/main.e6d0faa7.chunk.css"
   },
   {
-    "revision": "77d62abc2d793ed536d2",
-    "url": "/elm-ToDo/static/js/main.77d62abc.chunk.js"
+    "revision": "04bdec6aaa49033d2ef2",
+    "url": "/elm-ToDo/static/js/main.04bdec6a.chunk.js"
   },
   {
     "revision": "76934828e6de8fdaf815",
