@@ -28,7 +28,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/elm-ToDo/icons/trash.svg"
   },
   {
-    "revision": "fde9dabaa4ba128529496188104c1b65",
+    "revision": "d6256cc88952054afb5b30c2591eb83a",
     "url": "/elm-ToDo/index.html"
   },
   {
