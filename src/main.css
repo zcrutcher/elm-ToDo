@@ -53,13 +53,14 @@ body {
   outline: whitesmoke;
   outline: 2px solid black;
   padding: 8px;
+  -webkit-border-radius: 8px;
+  -moz-border-radius: 8px;
   border-radius: 8px;
 }
 
 .add-img {
   max-width: 18px;
   max-height: 24px;
-  /* background-color: rgb(231, 211, 184); */
   background-color: turquoise;
   border-radius: 8px;
   padding: 8px;
@@ -147,6 +148,7 @@ ul {
   height: 20px;
   align-self: center;
   border: none;
+  color: black;
 }
 
 /* Mobile CSS */

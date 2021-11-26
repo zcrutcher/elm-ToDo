@@ -48,17 +48,17 @@ generateId model =
     { model | id = model.id + 1 }
 
 
-toggleStatus : Record -> Record
-toggleStatus record =
-    if record.status == Active then
-        { record | status = Complete }
-
-    else
-        { record | status = Active }
-
-
 toggleRecordStatus : List Record -> Int -> List Record
 toggleRecordStatus records id =
+    let
+        toggleStatus : Record -> Record
+        toggleStatus record =
+            if record.status == Active then
+                { record | status = Complete }
+
+            else
+                { record | status = Active }
+    in
     List.map
         (\rec ->
             if rec.id == id then
@@ -88,17 +88,17 @@ addRecord records record =
         List.append records [ record ]
 
 
-editRecordText : Record -> String -> Record
-editRecordText rec text =
-    { rec | task = text }
-
-
-editRecordListText : List Record -> Int -> String -> List Record
-editRecordListText records id text =
+editRecordText : List Record -> Int -> String -> List Record
+editRecordText records id text =
+    let
+        editText : Record -> String -> Record
+        editText rec recText =
+            { rec | task = recText }
+    in
     List.map
         (\rec ->
             if rec.id == id then
-                editRecordText rec text
+                editText rec text
 
             else
                 rec
@@ -131,6 +131,7 @@ type Msg
     | Blur
     | SetFocus (Result Dom.Error ())
     | ClearCompleted
+    | UpdateTask
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -152,7 +153,7 @@ update msg model =
             ( { model | selectedItem = id, editText = text }, focusInputBox id )
 
         Edit text ->
-            ( { model | recordList = editRecordListText model.recordList model.selectedItem text, editText = text }, Cmd.none )
+            ( { model | recordList = editRecordText model.recordList model.selectedItem text, editText = text }, Cmd.none )
 
         ToggleStatus id ->
             ( { model | recordList = toggleRecordStatus model.recordList id }, Cmd.none )
@@ -164,7 +165,10 @@ update msg model =
             ( { model | selectedItem = 0 }, Cmd.none )
 
         ClearCompleted ->
-            ( { model | recordList = activeTasks model.recordList }, Cmd.none )
+            ( { model | recordList = taskList Active model.recordList }, Cmd.none )
+
+        UpdateTask ->
+            ( { model | selectedItem = 0 }, Cmd.none )
 
         SetFocus result ->
             ( model, Cmd.none )
@@ -192,15 +196,17 @@ taskForm taskText =
 displayInputOrText : Int -> Int -> String -> RecordStatus -> Html Msg
 displayInputOrText selected recordId task status =
     if recordId == selected then
-        input
-            [ type_ "text"
-            , class "task-text"
-            , onInput Edit
-            , onBlur Blur
-            , value task
-            , id (String.concat [ "input-id-", String.fromInt recordId ])
+        form [ onSubmit UpdateTask ]
+            [ input
+                [ type_ "text"
+                , class "task-text"
+                , onInput Edit
+                , onBlur Blur
+                , value task
+                , id (String.concat [ "input-id-", String.fromInt recordId ])
+                ]
+                []
             ]
-            []
 
     else
         div
@@ -211,24 +217,14 @@ displayInputOrText selected recordId task status =
             [ text task ]
 
 
-completeTaskCheck : Record -> Bool
-completeTaskCheck record =
-    record.status == Complete
-
-
-activeTaskCheck : Record -> Bool
-activeTaskCheck record =
-    record.status == Active
-
-
-completeTasks : List Record -> List Record
-completeTasks records =
-    List.filter completeTaskCheck records
-
-
-activeTasks : List Record -> List Record
-activeTasks records =
-    List.filter activeTaskCheck records
+taskList : RecordStatus -> List Record -> List Record
+taskList status records =
+    let
+        statusCheck : RecordStatus -> Record -> Bool
+        statusCheck stat rec =
+            rec.status == stat
+    in
+    List.filter (statusCheck status) records
 
 
 completedCheck : RecordStatus -> Bool
@@ -239,7 +235,8 @@ completedCheck status =
 activeCategoryLabel : Int -> Html Msg
 activeCategoryLabel count =
     div [ class "label" ]
-        [ h3 [ class "category-labels" ] [ text (String.concat [ "Tasks - ", String.fromInt count ]) ]
+        [ h3 [ class "category-labels" ]
+            [ String.concat [ "Tasks - ", String.fromInt count ] |> text ]
         ]
 
 
@@ -247,7 +244,12 @@ completeCategoryLabel : Int -> Html Msg
 completeCategoryLabel count =
     div [ class "complete-label" ]
         [ h3 [ class "category-labels" ]
-            [ text (String.concat [ "Completed - ", String.fromInt count ]) ]
+            [ String.concat
+                [ "Completed - "
+                , String.fromInt count
+                ]
+                |> text
+            ]
         , button
             [ class "clear-completed", onClick ClearCompleted ]
             [ text "Clear Completed" ]
@@ -257,6 +259,10 @@ completeCategoryLabel count =
 displayList : Int -> List Record -> Html Msg
 displayList selected records =
     let
+        taskCount : RecordStatus -> List Record -> Int
+        taskCount stat recs =
+            List.length (taskList stat recs)
+
         displayRecord : Int -> Record -> Html Msg
         displayRecord selectedId record =
             li [ class "record" ]
@@ -267,16 +273,34 @@ displayList selected records =
                     , checked (completedCheck record.status)
                     ]
                     []
-                , displayInputOrText selectedId record.id record.task record.status
+                , displayInputOrText
+                    selectedId
+                    record.id
+                    record.task
+                    record.status
                 , button [ class "delete-item-btn" ]
-                    [ img [ class "delete-item-img", src "./icons/trash.svg", onClick (Delete record.id) ] [] ]
+                    [ img
+                        [ class "delete-item-img"
+                        , src "./icons/trash.svg"
+                        , onClick (Delete record.id)
+                        ]
+                        []
+                    ]
                 ]
     in
     div [ class "holder" ]
-        [ viewIf (List.length (activeTasks records) > 0) (activeCategoryLabel (List.length (activeTasks records)))
-        , ul [] (List.map (displayRecord selected) (activeTasks records))
-        , viewIf (List.length (completeTasks records) > 0) (completeCategoryLabel (List.length (completeTasks records)))
-        , ul [] (List.map (displayRecord selected) (completeTasks records))
+        [ viewIf
+            (taskCount Active records > 0)
+            (taskCount Active records |> activeCategoryLabel)
+        , ul []
+            (List.map
+                (displayRecord selected)
+                (taskList Active records)
+            )
+        , viewIf
+            (taskCount Complete records > 0)
+            (taskCount Complete records |> completeCategoryLabel)
+        , ul [] (List.map (displayRecord selected) (taskList Complete records))
         ]
 
 
