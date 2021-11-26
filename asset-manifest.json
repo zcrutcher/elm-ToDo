@@ -1,19 +1,21 @@
 {
-  "main.css": "/elm-ToDo/static/css/main.98a8b770.chunk.css",
-  "main.js": "/elm-ToDo/static/js/main.0c36d5d2.chunk.js",
-  "main.js.map": "/elm-ToDo/static/js/main.0c36d5d2.chunk.js.map",
+  "main.css": "/elm-ToDo/static/css/main.7ace1e70.chunk.css",
+  "main.js": "/elm-ToDo/static/js/main.f634313e.chunk.js",
+  "main.js.map": "/elm-ToDo/static/js/main.f634313e.chunk.js.map",
   "runtime~main.js": "/elm-ToDo/static/js/runtime~main.76934828.js",
   "runtime~main.js.map": "/elm-ToDo/static/js/runtime~main.76934828.js.map",
   "vendors~main.js": "/elm-ToDo/static/js/vendors~main.0b49ec49.chunk.js",
   "vendors~main.js.map": "/elm-ToDo/static/js/vendors~main.0b49ec49.chunk.js.map",
   "./service-worker.js": "/elm-ToDo/./service-worker.js",
+  ".DS_Store": "/elm-ToDo/.DS_Store",
   "elm.js": "/elm-ToDo/elm.js",
   "favicon.ico": "/elm-ToDo/favicon.ico",
+  "icons/.DS_Store": "/elm-ToDo/icons/.DS_Store",
   "icons/check.svg": "/elm-ToDo/icons/check.svg",
   "icons/plus-black-symbol.svg": "/elm-ToDo/icons/plus-black-symbol.svg",
   "icons/trash.svg": "/elm-ToDo/icons/trash.svg",
   "index.html": "/elm-ToDo/index.html",
   "logo.svg": "/elm-ToDo/logo.svg",
   "manifest.json": "/elm-ToDo/manifest.json",
-  "precache-manifest.9180d70217bd4f8cb4d045a2de45fcda.js": "/elm-ToDo/precache-manifest.9180d70217bd4f8cb4d045a2de45fcda.js"
+  "precache-manifest.fa657d83726cfd545bca0ef079b19675.js": "/elm-ToDo/precache-manifest.fa657d83726cfd545bca0ef079b19675.js"
 }
